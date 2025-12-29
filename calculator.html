@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Loan Calculator | Malaysia (RM)</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background: url('https://picsum.photos/1920/1080?calculator') no-repeat center center fixed;
+            background-size: cover;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-car-front-fill"></i> Car Dealership Inventory
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            Branches
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="manthong.html">Manthong (Head Office)</a></li>
+                            <li><a class="dropdown-item" href="everforward.html">Everforward</a></li>
+                            <li><a class="dropdown-item" href="tscar.html">Tscar (Branch)</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="inventory.html">Inventory Management</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="calculator.html">Loan Calculator</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Feedback & Suggestions</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-5 pt-5">
+        <div class="content-container p-5">
+            <h2 class="mb-4 text-center"><i class="bi bi-calculator"></i> Car Loan Calculator (Malaysia RM)</h2>
+            <p class="text-center text-muted mb-5">Calculate your monthly car loan payments (0% - 50% down payment, up to 9 years loan term)</p>
+            
+            <div class="calculator-section">
+                <div class="row">
+                    <div class="col-md-6">
+                        <form id="loan-form">
+                            <div class="mb-3">
+                                <label for="car-price" class="form-label">Car Price (RM)</label>
+                                <input type="number" class="form-control" id="car-price" placeholder="Enter total car price" value="180000" min="0">
+                            </div>
+                            <div class="mb-3">
+                                <label for="down-payment-percent" class="form-label">Down Payment (%)</label>
+                                <input type="range" class="form-range" id="down-payment-percent" min="0" max="50" value="0" oninput="updateDownPayment()">
+                                <div class="d-flex justify-content-between">
+                                    <span>0%</span>
+                                    <span id="down-percent-display">0%</span>
+                                    <span>50%</span>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="down-payment" class="form-label">Down Payment Amount (RM)</label>
+                                <!-- 移除 readonly，添加 step="0.01" 支持小数输入 -->
+                                <input type="number" class="form-control" id="down-payment" step="0.01" min="0">
+                            </div>
+                            <div class="mb-3">
+                                <label for="loan-term" class="form-label">Loan Term (Years)</label>
+                                <select class="form-select" id="loan-term">
+                                    <option value="1">1 Year</option>
+                                    <option value="2">2 Years</option>
+                                    <option value="3">3 Years</option>
+                                    <option value="4">4 Years</option>
+                                    <option value="5">5 Years</option>
+                                    <option value="6">6 Years</option>
+                                    <option value="7">7 Years</option>
+                                    <option value="8">8 Years</option>
+                                    <option value="9" selected>9 Years</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="interest-rate" class="form-label">Annual Interest Rate (%)</label>
+                                <input type="number" class="form-control" id="interest-rate" value="4.5" step="0.1" min="0">
+                            </div>
+                            <button type="button" class="btn btn-primary w-100" onclick="calculateLoanResult()">Calculate Monthly Payment</button>
+                        </form>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title text-center">Calculation Results</h5>
+                                <hr>
+                                <div class="row mb-3">
+                                    <div class="col-6"><strong>Loan Amount:</strong></div>
+                                    <div class="col-6 text-end" id="loan-amount">180,000.00 RM</div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-6"><strong>Total Interest:</strong></div>
+                                    <div class="col-6 text-end" id="total-interest">72,900.00 RM</div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-6"><strong>Total Payment:</strong></div>
+                                    <div class="col-6 text-end" id="total-payment">252,900.00 RM</div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-6"><strong>Monthly Payment:</strong></div>
+                                    <div class="col-6 text-end" id="monthly-payment">2,340.28 RM</div>
+                                </div>
+                                <hr>
+                                <p class="text-muted small text-center">
+                                    * Calculation based on equal monthly installment (EMI) formula<br>
+                                    * Interest rate is fixed for the entire loan term
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Save Status Notification -->
+    <div class="save-status" id="save-status">Calculation updated!</div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container text-center">
+            <p>© 2025 Car Dealership Inventory System - Malaysia (RM)</p>
+            <p class="text-muted small">Car Loan Calculator | 0% Down Payment | Up to 9 Years Term</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="script.js"></script>
+</body>
+</html>

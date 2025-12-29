@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin | Feedback Management | Car Dealership</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* 管理员页面专属样式，兼容原有Morph风格 */
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background-attachment: fixed;
+        }
+        .message-card {
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-radius: 15px;
+            background: linear-gradient(135deg, #fff 0%, #f5f7fa 100%);
+            border: 1px solid rgba(255,255,255,0.8);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .message-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        /* 管理员专属导航高亮 */
+        .nav-link.admin-active {
+            color: #f8c146 !important;
+        }
+        .nav-link.admin-active::after {
+            width: 100%;
+        }
+        /* 新增：删除留言按钮的Morph动效 */
+        .delete-msg-btn {
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(90deg, #dc3545, #bb2d3b);
+            transition: all 0.3s ease;
+            border: none !important;
+        }
+        .delete-msg-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+            background: linear-gradient(90deg, #bb2d3b, #dc3545) !important;
+        }
+        /* 登出按钮样式 */
+        .logout-btn {
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-radius: 50px !important;
+        }
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(220, 53, 69, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏（与其他页面一致，新增Admin入口） -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-car-front-fill"></i> Car Dealership Inventory
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            Branches
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="manthong.html">Manthong (Head Office)</a></li>
+                            <li><a class="dropdown-item" href="everforward.html">Everforward</a></li>
+                            <li><a class="dropdown-item" href="tscar.html">Tscar (Branch)</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="inventory.html">Inventory Management</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="calculator.html">Loan Calculator</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Feedback & Suggestions</a>
+                    </li>
+                    <!-- 新增：管理员页面入口（仅管理员可见，可后续加密码保护） -->
+                    <li class="nav-item">
+                        <a class="nav-link admin-active" href="admin.html">Admin - Feedback</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <div class="container mt-5 pt-5">
+        <div class="content-container p-5">
+            <!-- 管理员页面标题 + 登出按钮 -->
+            <div class="text-center mb-5">
+                <h2><i class="bi bi-shield-lock"></i> Admin Panel - Feedback Management</h2>
+                <p class="text-muted">View and manage all feedback from branch staff (Malaysia RM)</p>
+                <!-- 新增：登出按钮 -->
+                <button class="btn btn-sm btn-outline-danger logout-btn mt-2" onclick="logoutAdmin()">
+                    <i class="bi bi-box-arrow-right"></i> Logout Admin
+                </button>
+            </div>
+
+            <!-- 留言列表容器 -->
+            <div id="messages-list" class="row g-4">
+                <!-- 留言卡片会通过JS动态渲染 -->
+            </div>
+
+            <!-- 无留言时的提示 -->
+            <div id="empty-state" class="col-12 text-center py-5 d-none">
+                <h4>No feedback received yet</h4>
+                <p class="text-muted mt-2">Feedback from contact form will appear here</p>
+                <a href="contact.html" class="btn btn-outline-primary mt-3">
+                    <i class="bi bi-chat-left-text"></i> Test Submit Feedback
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 保存状态提示（复用原有样式） -->
+    <div class="save-status" id="save-status">Feedback deleted successfully!</div>
+
+    <!-- 页脚（与其他页面一致） -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container text-center">
+            <p>© 2025 Car Dealership Inventory System - Malaysia (RM)</p>
+            <p class="text-muted small">Admin Panel | Feedback Management</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- 管理员页面专属JS -->
+    <script>
+        // ===== 核心修复：先隐藏页面内容，验证通过后再显示 =====
+        document.body.style.opacity = 0; // 初始隐藏页面
+        
+        // ===== 管理员密码验证 =====
+        // 自定义你的管理员密码（建议修改为自己的密码！）
+        const ADMIN_PASSWORD = 'Admin123!'; 
+
+        // 页面加载时先验证密码
+        function checkAdminAuth() {
+            // 检查是否已登录（避免每次刷新都输密码）
+            const isLoggedIn = localStorage.getItem('admin_logged_in');
+            if (isLoggedIn === 'true') {
+                document.body.style.opacity = 1; // 显示页面
+                return true;
+            }
+
+            // 弹出密码输入框
+            const inputPwd = prompt('🔒 Enter Admin Password to Access:');
+            if (inputPwd === ADMIN_PASSWORD) {
+                // 记录登录状态（有效期1小时，可选）
+                localStorage.setItem('admin_logged_in', 'true');
+                setTimeout(() => {
+                    localStorage.removeItem('admin_logged_in'); // 1小时后自动登出
+                }, 3600000);
+                document.body.style.opacity = 1; // 显示页面
+                return true;
+            } else {
+                // 密码错误，跳回首页
+                alert('❌ Incorrect Password! Access Denied.');
+                window.location.href = 'index.html';
+                return false;
+            }
+        }
+
+        // 新增：管理员登出函数
+        function logoutAdmin() {
+            if (confirm('⚠️ Are you sure to logout?')) {
+                localStorage.removeItem('admin_logged_in');
+                showSaveStatus('Logged out successfully!');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+            }
+        }
+
+        // 立即执行密码验证
+        checkAdminAuth();
+
+        // ===== 密码验证结束 =====
+
+        // 复用留言数据存储KEY（与script.js一致）
+        const MESSAGE_KEY = 'car_dealership_messages';
+        
+        // 保存状态提示函数（复用原有逻辑）
+        function showSaveStatus(message = 'Changes saved successfully!') {
+            const status = document.getElementById('save-status');
+            if (!status) return;
+            
+            status.textContent = `✅ ${message}`;
+            status.style.display = 'block';
+            setTimeout(() => {
+                status.style.display = 'none';
+            }, 3000);
+        }
+
+        // 加载所有留言
+        function loadAllMessages() {
+            const messages = JSON.parse(localStorage.getItem(MESSAGE_KEY) || '[]');
+            const listContainer = document.getElementById('messages-list');
+            const emptyState = document.getElementById('empty-state');
+
+            // 清空现有内容
+            listContainer.innerHTML = '';
+
+            // 无留言时显示空状态
+            if (messages.length === 0) {
+                emptyState.classList.remove('d-none');
+                return;
+            }
+            emptyState.classList.add('d-none');
+
+            // 渲染留言卡片
+            messages.forEach(msg => {
+                // 修复：兼容无ID的留言（自动生成ID）
+                const msgId = msg.id || Date.now() + Math.floor(Math.random() * 1000);
+                
+                // 分支名称映射（与script.js一致）
+                const branchMap = {
+                    manthong: 'Manthong (Head Office)',
+                    everforward: 'Everforward',
+                    tscar: 'Tscar (Branch)'
+                };
+                const branchLabel = branchMap[msg.branch] || msg.branch;
+                
+                // 分支徽章样式（与库存卡片一致）
+                const branchBadgeClass = {
+                    manthong: 'bg-primary',
+                    everforward: 'bg-success',
+                    tscar: 'bg-secondary'
+                }[msg.branch] || 'bg-info';
+
+                // 留言卡片HTML
+                const messageCard = `
+                    <div class="col-md-6 col-lg-4">
+                        <div class="message-card p-4">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <span class="badge ${branchBadgeClass}">${branchLabel}</span>
+                                <button class="btn btn-sm btn-danger delete-msg-btn" 
+                                        onclick="deleteMessage(${msgId})"
+                                        aria-label="Delete feedback from ${msg.name}">
+                                    <i class="bi bi-trash-fill"></i>
+                                </button>
+                            </div>
+                            <h5 class="card-title">${msg.name}</h5>
+                            <p class="text-muted small mb-2">
+                                <i class="bi bi-envelope"></i> ${msg.email} <br>
+                                <i class="bi bi-clock"></i> ${msg.date || 'Unknown Date'}
+                            </p>
+                            <hr class="my-2">
+                            <p class="card-text">${msg.message}</p>
+                        </div>
+                    </div>
+                `;
+                listContainer.insertAdjacentHTML('beforeend', messageCard);
+            });
+        }
+
+        // 删除留言（修复：兼容无ID的留言）
+        function deleteMessage(msgId) {
+            if (confirm('⚠️ Are you sure you want to delete this feedback? (This action cannot be undone)')) {
+                let messages = JSON.parse(localStorage.getItem(MESSAGE_KEY) || '[]');
+                
+                // 兼容两种情况：有ID / 无ID（通过内容匹配）
+                messages = messages.filter(msg => {
+                    if (msg.id) return msg.id !== msgId;
+                    // 无ID时，通过时间+随机数匹配（兜底）
+                    const tempId = Date.now() + Math.floor(Math.random() * 1000);
+                    return tempId !== msgId;
+                });
+                
+                // 保存到本地存储
+                localStorage.setItem(MESSAGE_KEY, JSON.stringify(messages));
+                // 重新加载列表
+                loadAllMessages();
+                // 显示删除成功提示
+                showSaveStatus('Feedback deleted successfully!');
+            }
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            if (localStorage.getItem('admin_logged_in') === 'true') {
+                loadAllMessages();
+            }
+        });
+    </script>
+</body>
+</html>

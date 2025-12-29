@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Dealership Inventory | Malaysia (RM)</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background: url('https://picsum.photos/1920/1080?car-inventory') no-repeat center center fixed;
+            background-size: cover;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-car-front-fill"></i> Car Dealership Inventory
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            Branches
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="manthong.html">Manthong (Head Office)</a></li>
+                            <li><a class="dropdown-item" href="everforward.html">Everforward</a></li>
+                            <li><a class="dropdown-item" href="tscar.html">Tscar (Branch)</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="inventory.html">Inventory Management</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="calculator.html">Loan Calculator</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Feedback & Suggestions</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin.html">Admin Panel</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <h1 class="hero-title">Car Dealership Inventory System</h1>
+            <p class="hero-subtitle">Manage your car inventory across all branches in Malaysia (RM) - Easy loan calculation, real-time inventory tracking, and feedback management</p>
+            <div class="d-flex gap-3 justify-content-center">
+                <a href="inventory.html" class="btn hero-btn">
+                    <i class="bi bi-plus-circle"></i> Manage Inventory
+                </a>
+                <a href="calculator.html" class="btn hero-btn">
+                    <i class="bi bi-calculator"></i> Calculate Loan
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container mt-5 pt-5">
+        <div class="content-container p-5">
+            <!-- Quick Stats -->
+            <div class="row mb-5">
+                <div class="col-md-4 text-center">
+                    <div class="p-4 bg-light rounded-3">
+                        <i class="bi bi-car-front fs-1 text-primary"></i>
+                        <h3 id="total-cars">0</h3>
+                        <p class="text-muted">Total Cars in Inventory</p>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="p-4 bg-light rounded-3">
+                        <i class="bi bi-building fs-1 text-success"></i>
+                        <h3>3</h3>
+                        <p class="text-muted">Active Branches</p>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="p-4 bg-light rounded-3">
+                        <i class="bi bi-chat-left-text fs-1 text-secondary"></i>
+                        <h3 id="total-feedback">0</h3>
+                        <p class="text-muted">Customer Feedback</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inventory List -->
+            <h2 class="mb-4 text-center"><i class="bi bi-list-check"></i> All Inventory</h2>
+            <div class="stock-filter mb-4">
+                <div class="row">
+                    <div class="col-md-8">
+                        <input type="text" id="search-input" class="form-control" placeholder="Search by model/brand/plate number...">
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-primary w-100" id="reset-filter-btn">
+                            <i class="bi bi-arrow-counterclockwise"></i> Reset
+                        </button>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-outline-primary w-100" id="calc-toggle">
+                            &#x270E;
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calculator Popup -->
+            <div id="calculator-popup" class="calculator-section mb-4" style="display: none;">
+                <h3 class="mb-3">Quick Loan Calculator</h3>
+                <form id="loan-form">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label for="otr-price" class="form-label">Car Price (RM)</label>
+                            <input type="number" class="form-control" id="car-price" placeholder="e.g. 180000" value="180000" min="0">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="down-payment-percent" class="form-label">Down Payment (%)</label>
+                            <input type="range" class="form-range" id="down-payment-percent" min="0" max="50" value="0" oninput="updateDownPayment()">
+                            <div class="d-flex justify-content-between">
+                                <span>0%</span>
+                                <span id="down-percent-display">0%</span>
+                                <span>50%</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="down-payment" class="form-label">Down Payment (RM)</label>
+                            <input type="number" class="form-control" id="down-payment" step="0.01" min="0">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="loan-term" class="form-label">Loan Term (Years)</label>
+                            <select class="form-select" id="loan-term">
+                                <option value="1">1 Year</option>
+                                <option value="2">2 Years</option>
+                                <option value="3">3 Years</option>
+                                <option value="4">4 Years</option>
+                                <option value="5">5 Years</option>
+                                <option value="6">6 Years</option>
+                                <option value="7">7 Years</option>
+                                <option value="8">8 Years</option>
+                                <option value="9" selected>9 Years</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mt-3">
+                            <label for="interest-rate" class="form-label">Interest Rate (%)</label>
+                            <input type="number" class="form-control" id="interest-rate" value="4.5" step="0.1" min="0">
+                        </div>
+                        <div class="col-md-9 mt-3 d-flex align-items-end">
+                            <div class="w-100">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <p class="mb-1"><strong>Loan Amount:</strong></p>
+                                        <p id="loan-amount" class="fs-5">RM 180,000.00</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <p class="mb-1"><strong>Total Interest:</strong></p>
+                                        <p id="total-interest" class="fs-5">RM 72,900.00</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <p class="mb-1"><strong>Monthly Payment:</strong></p>
+                                        <p id="monthly-payment" class="fs-5">RM 2,340.28</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex gap-2 mb-4">
+                <button id="add-car-btn" class="btn btn-success">
+                    <i class="bi bi-plus"></i> Add Car
+                </button>
+                <button id="save-data-btn" class="btn btn-primary">
+                    <i class="bi bi-save"></i> Save Data
+                </button>
+                <button id="reset-data-btn" class="btn btn-warning">
+                    <i class="bi bi-arrow-counterclockwise"></i> Reset Data
+                </button>
+                <button id="export-data-btn" class="btn btn-info">
+                    <i class="bi bi-download"></i> Export
+                </button>
+                <button id="import-github-btn" class="btn btn-secondary">
+                    <i class="bi bi-upload"></i> Import
+                </button>
+                <button id="delete-car-btn" class="btn btn-danger">
+                    <i class="bi bi-trash"></i> Delete Car
+                </button>
+            </div>
+
+            <!-- Mobile Action Buttons -->
+            <div class="d-md-none fixed-bottom bg-dark text-white p-2 d-flex justify-content-around">
+                <button id="mobile-add-btn" class="btn btn-success rounded-circle w-15 h-15">
+                    <i class="bi bi-plus"></i>
+                </button>
+                <button id="mobile-save-btn" class="btn btn-primary rounded-circle w-15 h-15">
+                    <i class="bi bi-save"></i>
+                </button>
+                <button id="mobile-more-btn" class="btn btn-secondary rounded-circle w-15 h-15 position-relative">
+                    <i class="bi bi-three-dots"></i>
+                    <div class="mobile-more-menu" style="display: none;">
+                        <button class="btn btn-warning mobile-menu-btn" id="mobile-reset-btn">
+                            <i class="bi bi-arrow-counterclockwise"></i> Reset Data
+                        </button>
+                        <button class="btn btn-info mobile-menu-btn" id="mobile-export-btn">
+                            <i class="bi bi-download"></i> Export Data
+                        </button>
+                        <button class="btn btn-danger mobile-menu-btn" id="mobile-delete-btn">
+                            <i class="bi bi-trash"></i> Delete Car
+                        </button>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Car Container -->
+            <div class="row" id="car-container" id="car-stocks">
+                <!-- Cars will be loaded here -->
+            </div>
+
+            <!-- Last Updated -->
+            <div class="text-center mt-4 text-muted">
+                <p id="last-updated">Last updated: Loading...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals (Hidden by default) -->
+    <div id="delete-modal" class="modal fade" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete Car</h5>
+                    <button type="button" class="btn-close" id="close-delete-modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete this car from inventory? This action cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancel-delete-btn">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirm-delete-btn">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Save Status Notification -->
+    <div class="save-status" id="save-status">Data saved successfully!</div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container text-center">
+            <p>© 2025 Car Dealership Inventory System - Malaysia (RM)</p>
+            <p class="text-muted small">All Branches | Loan Calculator | Inventory Management</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="script.js"></script>
+    <script>
+        // ----------------------------------------------------
+        // 12. Event Listeners Initialization
+        // ----------------------------------------------------
+        function initializeEventListeners() {
+            // 安全获取元素
+            const getElement = (id) => {
+                const el = document.getElementById(id);
+                if (!el) console.warn(`Element with ID "${id}" not found`);
+                return el;
+            };
+
+            // Add car button
+            getElement('add-car-btn')?.addEventListener('click', openAddCarModal);
+
+            // Save and reset buttons
+            getElement('save-data-btn')?.addEventListener('click', () => {
+                saveCars(inventory);
+                showNotification('Data saved successfully', 'success');
+            });
+            
+            getElement('reset-data-btn')?.addEventListener('click', resetToDefaultData);
+
+            // Export and import buttons
+            getElement('export-data-btn')?.addEventListener('click', exportCarData);
+            getElement('import-github-btn')?.addEventListener('click', importFromGitHub);
+
+            // Save car button
+            getElement('save-car-btn')?.addEventListener('click', saveCarData);
+
+            // Delete functionality
+            getElement('delete-car-btn')?.addEventListener('click', () => {
+                const deleteModal = new bootstrap.Modal(getElement('delete-modal'));
+                deleteModal.show();
+            });
+            
+            getElement('confirm-delete-btn')?.addEventListener('click', deleteCarData);
+
+            // Close modals
+            const closeBtns = ['close-modal', 'close-delete-modal', 'cancel-btn', 'cancel-delete-btn'];
+            closeBtns.forEach(id => {
+                getElement(id)?.addEventListener('click', () => {
+                    const modal = bootstrap.Modal.getInstance(getElement('delete-modal'));
+                    if (modal) modal.hide();
+                });
+            });
+
+            // Edit car functionality (event delegation)
+            getElement('car-container')?.addEventListener('click', (e) => {
+                if (e.target.classList.contains('edit-car-btn')) {
+                    const carItem = e.target.closest('.stock-card');
+                    if (!carItem) return;
+                    const carId = parseInt(carItem.getAttribute('data-car-id'));
+                    openEditCarModal(carId);
+                }
+            });
+
+            // Search functionality
+            getElement('search-input')?.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                const filteredCars = inventory.filter(car => 
+                    car.model.toLowerCase().includes(searchTerm) ||
+                    car.year?.toString().includes(searchTerm) ||
+                    car.specs.toLowerCase().includes(searchTerm)
+                );
+                renderCarList(filteredCars);
+            });
+
+            // Calculator functionality
+            const calculatorInputs = [
+                getElement('otr-price'),
+                getElement('down-payment'),
+                getElement('loan-years'),
+                getElement('interest-rate')
+            ];
+            calculatorInputs.forEach(input => {
+                input?.addEventListener('input', updateLoanCalculation);
+            });
+
+            // Calculator toggle
+            getElement('calc-toggle')?.addEventListener('click', () => {
+                const popup = getElement('calculator-popup');
+                const toggleBtn = getElement('calc-toggle');
+                
+                if (popup.style.display === 'block') {
+                    popup.style.display = 'none';
+                    toggleBtn.innerHTML = '&#x270E;';
+                } else {
+                    popup.style.display = 'block';
+                    toggleBtn.innerHTML = '&#x2715;';
+                    updateLoanCalculation();
+                }
+            });
+
+            // Mobile action buttons
+            getElement('mobile-add-btn')?.addEventListener('click', openAddCarModal);
+            getElement('mobile-save-btn')?.addEventListener('click', () => {
+                saveCars(inventory);
+                showNotification('Data saved successfully', 'success');
+            });
+            getElement('mobile-more-btn')?.addEventListener('click', toggleMobileMenu);
+            
+            // Mobile menu buttons
+            getElement('mobile-reset-btn')?.addEventListener('click', resetToDefaultData);
+            getElement('mobile-export-btn')?.addEventListener('click', exportCarData);
+            getElement('mobile-delete-btn')?.addEventListener('click', () => {
+                const deleteModal = new bootstrap.Modal(getElement('delete-modal'));
+                deleteModal.show();
+            });
+
+            // Close calculator when clicking outside
+            document.addEventListener('click', (e) => {
+                const calculator = getElement('calculator-popup');
+                const toggle = getElement('calc-toggle');
+                
+                if (calculator && calculator.style.display === 'block' && 
+                    !calculator.contains(e.target) && 
+                    !toggle.contains(e.target)) {
+                    calculator.style.display = 'none';
+                    toggle.innerHTML = '&#x270E;';
+                }
+            });
+        }
+
+        // 显示通知（兼容函数）
+        function showNotification(message, type) {
+            showSaveStatus(message);
+        }
+
+        // 更新统计数据
+        function updateStats() {
+            const inventoryData = JSON.parse(localStorage.getItem(INVENTORY_KEY) || '[]');
+            const feedbackData = JSON.parse(localStorage.getItem(MESSAGE_KEY) || '[]');
+            
+            document.getElementById('total-cars').textContent = inventoryData.length;
+            document.getElementById('total-feedback').textContent = feedbackData.length;
+        }
+
+        // ----------------------------------------------------
+        // 13. Initialization on Page Load
+        // ----------------------------------------------------
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize data
+            inventory = getCars();
+
+            // Render cars
+            renderCarList(inventory);
+
+            // Setup event listeners
+            initializeEventListeners();
+
+            // Initialize calculator and time display
+            updateLoanCalculation();
+            displayLastUpdatedTime();
+            updateStats();
+        });
+    </script>
+</body>
+</html>
