@@ -1,438 +1,204 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Car Dealership Inventory | Malaysia (RM)</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="style.css">
+    <title>Bedong Family Group</title>
     <style>
-        body {
-            background: url('https://picsum.photos/1920/1080?car-inventory') no-repeat center center fixed;
-            background-size: cover;
+        :root {
+            --bg: #FFF9EC;
+            --font-main: 'Comic Sans MS', 'Microsoft YaHei', sans-serif;
+            --accent: #FF6B6B;
         }
+
+        body { margin: 0; background: var(--bg); font-family: var(--font-main); scroll-behavior: smooth; overflow-x: hidden; }
+
+        /* --- INDEX 部分 --- */
+        .index-page {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #FF9A9E 0%, #FECFEF 100%);
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .index-page h1 { font-size: 2.5rem; margin: 0; text-shadow: 3px 3px 0px rgba(0,0,0,0.1); }
+        .start-btn {
+            margin-top: 30px; background: var(--accent); color: white;
+            padding: 15px 40px; border-radius: 50px; text-decoration: none;
+            font-weight: bold; box-shadow: 0 5px 0 #d64545; transition: 0.2s;
+        }
+        .start-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #d64545; }
+
+        /* --- FAMILY 列表 --- */
+        .family-section { padding: 40px 15px; }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* 卡片样式 */
+        .card {
+            background: white;
+            border-radius: 25px;
+            padding: 15px;
+            text-align: center;
+            border: 4px solid #FFD93D;
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+        .card:hover { transform: translateY(-10px) rotate(2deg); }
+        
+        /* 卡片照片 */
+        .card-img {
+            width: 100px; height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #eee;
+            margin-bottom: 10px;
+            background: #fdfdfd;
+        }
+        .card-name { font-weight: bold; font-size: 1.2rem; color: #444; }
+
+        /* --- 弹窗 --- */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);
+            z-index: 100; justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: white; width: 85%; max-width: 350px;
+            border-radius: 35px; padding: 25px; border: 6px solid #6BCB77;
+            position: relative; text-align: center;
+        }
+        .modal-img {
+            width: 150px; height: 150px; border-radius: 30px;
+            object-fit: cover; margin-bottom: 15px; border: 4px solid #f0f0f0;
+        }
+        .close { position: absolute; right: 20px; top: 15px; font-size: 30px; cursor: pointer; color: #ccc; }
+        
+        .info-box { text-align: left; margin-top: 15px; }
+        .info-item { margin: 12px 0; border-bottom: 1px dashed #eee; padding-bottom: 5px; }
+        .info-item label { color: var(--accent); font-weight: bold; font-size: 0.8rem; display: block; }
+        .info-item p { margin: 3px 0 0; color: #555; font-size: 1.05rem; }
     </style>
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
-        <div class="container">
-            <a class="navbar-brand" href="index.html">
-                <i class="bi bi-car-front-fill"></i> Car Dealership Inventory
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="index.html">Home</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            Branches
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="manthong.html">Manthong (Head Office)</a></li>
-                            <li><a class="dropdown-item" href="everforward.html">Everforward</a></li>
-                            <li><a class="dropdown-item" href="tscar.html">Tscar (Branch)</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="inventory.html">Inventory Management</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="calculator.html">Loan Calculator</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="contact.html">Feedback & Suggestions</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="admin.html">Admin Panel</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
 
-    <!-- Hero Section -->
-    <section class="hero-section">
-        <div class="container">
-            <h1 class="hero-title">Car Dealership Inventory System</h1>
-            <p class="hero-subtitle">Manage your car inventory across all branches in Malaysia (RM) - Easy loan calculation, real-time inventory tracking, and feedback management</p>
-            <div class="d-flex gap-3 justify-content-center">
-                <a href="inventory.html" class="btn hero-btn">
-                    <i class="bi bi-plus-circle"></i> Manage Inventory
-                </a>
-                <a href="calculator.html" class="btn hero-btn">
-                    <i class="bi bi-calculator"></i> Calculate Loan
-                </a>
-            </div>
-        </div>
-    </section>
+    <div class="index-page">
+        <h1>🏡 This is our Bedong Family Group</h1>
+        <p>30 位家庭成员的独家记录</p>
+        <a href="#family" class="start-btn">点击开启 🚀</a>
+    </div>
 
-    <!-- Main Content -->
-    <div class="container mt-5 pt-5">
-        <div class="content-container p-5">
-            <!-- Quick Stats -->
-            <div class="row mb-5">
-                <div class="col-md-4 text-center">
-                    <div class="p-4 bg-light rounded-3">
-                        <i class="bi bi-car-front fs-1 text-primary"></i>
-                        <h3 id="total-cars">0</h3>
-                        <p class="text-muted">Total Cars in Inventory</p>
-                    </div>
-                </div>
-                <div class="col-md-4 text-center">
-                    <div class="p-4 bg-light rounded-3">
-                        <i class="bi bi-building fs-1 text-success"></i>
-                        <h3>3</h3>
-                        <p class="text-muted">Active Branches</p>
-                    </div>
-                </div>
-                <div class="col-md-4 text-center">
-                    <div class="p-4 bg-light rounded-3">
-                        <i class="bi bi-chat-left-text fs-1 text-secondary"></i>
-                        <h3 id="total-feedback">0</h3>
-                        <p class="text-muted">Customer Feedback</p>
-                    </div>
-                </div>
-            </div>
+    <div class="family-section" id="family">
+        <div class="grid" id="memberGrid"></div>
+    </div>
 
-            <!-- Inventory List -->
-            <h2 class="mb-4 text-center"><i class="bi bi-list-check"></i> All Inventory</h2>
-            <div class="stock-filter mb-4">
-                <div class="row">
-                    <div class="col-md-8">
-                        <input type="text" id="search-input" class="form-control" placeholder="Search by model/brand/plate number...">
-                    </div>
-                    <div class="col-md-2">
-                        <button class="btn btn-primary w-100" id="reset-filter-btn">
-                            <i class="bi bi-arrow-counterclockwise"></i> Reset
-                        </button>
-                    </div>
-                    <div class="col-md-2">
-                        <button class="btn btn-outline-primary w-100" id="calc-toggle">
-                            &#x270E;
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Calculator Popup -->
-            <div id="calculator-popup" class="calculator-section mb-4" style="display: none;">
-                <h3 class="mb-3">Quick Loan Calculator</h3>
-                <form id="loan-form">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <label for="otr-price" class="form-label">Car Price (RM)</label>
-                            <input type="number" class="form-control" id="car-price" placeholder="e.g. 180000" value="180000" min="0">
-                        </div>
-                        <div class="col-md-3">
-                            <label for="down-payment-percent" class="form-label">Down Payment (%)</label>
-                            <input type="range" class="form-range" id="down-payment-percent" min="0" max="50" value="0" oninput="updateDownPayment()">
-                            <div class="d-flex justify-content-between">
-                                <span>0%</span>
-                                <span id="down-percent-display">0%</span>
-                                <span>50%</span>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="down-payment" class="form-label">Down Payment (RM)</label>
-                            <input type="number" class="form-control" id="down-payment" step="0.01" min="0">
-                        </div>
-                        <div class="col-md-3">
-                            <label for="loan-term" class="form-label">Loan Term (Years)</label>
-                            <select class="form-select" id="loan-term">
-                                <option value="1">1 Year</option>
-                                <option value="2">2 Years</option>
-                                <option value="3">3 Years</option>
-                                <option value="4">4 Years</option>
-                                <option value="5">5 Years</option>
-                                <option value="6">6 Years</option>
-                                <option value="7">7 Years</option>
-                                <option value="8">8 Years</option>
-                                <option value="9" selected>9 Years</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3 mt-3">
-                            <label for="interest-rate" class="form-label">Interest Rate (%)</label>
-                            <input type="number" class="form-control" id="interest-rate" value="4.5" step="0.1" min="0">
-                        </div>
-                        <div class="col-md-9 mt-3 d-flex align-items-end">
-                            <div class="w-100">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <p class="mb-1"><strong>Loan Amount:</strong></p>
-                                        <p id="loan-amount" class="fs-5">RM 180,000.00</p>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <p class="mb-1"><strong>Total Interest:</strong></p>
-                                        <p id="total-interest" class="fs-5">RM 72,900.00</p>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <p class="mb-1"><strong>Monthly Payment:</strong></p>
-                                        <p id="monthly-payment" class="fs-5">RM 2,340.28</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="d-flex gap-2 mb-4">
-                <button id="add-car-btn" class="btn btn-success">
-                    <i class="bi bi-plus"></i> Add Car
-                </button>
-                <button id="save-data-btn" class="btn btn-primary">
-                    <i class="bi bi-save"></i> Save Data
-                </button>
-                <button id="reset-data-btn" class="btn btn-warning">
-                    <i class="bi bi-arrow-counterclockwise"></i> Reset Data
-                </button>
-                <button id="export-data-btn" class="btn btn-info">
-                    <i class="bi bi-download"></i> Export
-                </button>
-                <button id="import-github-btn" class="btn btn-secondary">
-                    <i class="bi bi-upload"></i> Import
-                </button>
-                <button id="delete-car-btn" class="btn btn-danger">
-                    <i class="bi bi-trash"></i> Delete Car
-                </button>
-            </div>
-
-            <!-- Mobile Action Buttons -->
-            <div class="d-md-none fixed-bottom bg-dark text-white p-2 d-flex justify-content-around">
-                <button id="mobile-add-btn" class="btn btn-success rounded-circle w-15 h-15">
-                    <i class="bi bi-plus"></i>
-                </button>
-                <button id="mobile-save-btn" class="btn btn-primary rounded-circle w-15 h-15">
-                    <i class="bi bi-save"></i>
-                </button>
-                <button id="mobile-more-btn" class="btn btn-secondary rounded-circle w-15 h-15 position-relative">
-                    <i class="bi bi-three-dots"></i>
-                    <div class="mobile-more-menu" style="display: none;">
-                        <button class="btn btn-warning mobile-menu-btn" id="mobile-reset-btn">
-                            <i class="bi bi-arrow-counterclockwise"></i> Reset Data
-                        </button>
-                        <button class="btn btn-info mobile-menu-btn" id="mobile-export-btn">
-                            <i class="bi bi-download"></i> Export Data
-                        </button>
-                        <button class="btn btn-danger mobile-menu-btn" id="mobile-delete-btn">
-                            <i class="bi bi-trash"></i> Delete Car
-                        </button>
-                    </div>
-                </button>
-            </div>
-
-            <!-- Car Container -->
-            <div class="row" id="car-container" id="car-stocks">
-                <!-- Cars will be loaded here -->
-            </div>
-
-            <!-- Last Updated -->
-            <div class="text-center mt-4 text-muted">
-                <p id="last-updated">Last updated: Loading...</p>
-            </div>
+    <div class="modal" id="myModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="modalBody"></div>
         </div>
     </div>
 
-    <!-- Modals (Hidden by default) -->
-    <div id="delete-modal" class="modal fade" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Delete Car</h5>
-                    <button type="button" class="btn-close" id="close-delete-modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Are you sure you want to delete this car from inventory? This action cannot be undone.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" id="cancel-delete-btn">Cancel</button>
-                    <button type="button" class="btn btn-danger" id="confirm-delete-btn">Delete</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Save Status Notification -->
-    <div class="save-status" id="save-status">Data saved successfully!</div>
-
-    <!-- Footer -->
-    <footer class="bg-dark text-white py-4 mt-5">
-        <div class="container text-center">
-            <p>© 2025 Car Dealership Inventory System - Malaysia (RM)</p>
-            <p class="text-muted small">All Branches | Loan Calculator | Inventory Management</p>
-        </div>
-    </footer>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Custom JS -->
-    <script src="script.js"></script>
     <script>
-        // ----------------------------------------------------
-        // 12. Event Listeners Initialization
-        // ----------------------------------------------------
-        function initializeEventListeners() {
-            // 安全获取元素
-            const getElement = (id) => {
-                const el = document.getElementById(id);
-                if (!el) console.warn(`Element with ID "${id}" not found`);
-                return el;
-            };
+        // Zay，在这里修改资料和照片路径
+        // 如果没有照片，photo 留空或写一个不存在的名字，它会自动显示默认头像
+        const family = [
+            { name: "阿公", position: "刘亚龙", birth: "5/2/1942", personality: "喜欢吃capati", motto: "5点了吗", photo: "agong.jpg" },
+            { name: "阿嬷", position: "林清萍", birth: "10/9/1946", personality: "有着惊人的默契", motto: "吃饭了吗？", photo: "ama.jpg" },
+            { name: "二姨", position: "刘若戴", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
+            { name: "大舅", position: "刘承佑", birth: "2/11/1972", personality: "酒量惊人", motto: "哈?", photo: "zay.jpg" },
+            { name: "三姨", position: "刘若坤", birth: "11/10/1977", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
+            { name: "四姨", position: "刘若素", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
+            { name: "五姨", position: "刘彩辉", birth: "11/10/1977", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
+            { name: "小姨", position: "刘彩芝", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
+            { name: "舅舅", position: "刘承xia", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
+            { name: "二姨丈", position: "刘展", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
+            { name: "阿Kim", position: "谢如意", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
+            { name: "三姨丈", position: "刘若戴", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
+            { name: "四姨丈", position: "刘若戴", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
+            { name: "五姨丈", position: "陈huanren", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
+            { name: "小姨丈", position: "猫", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
 
-            // Add car button
-            getElement('add-car-btn')?.addEventListener('click', openAddCarModal);
+            { name: "阿齐", position: "刘珈齐", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
+            { name: "阿宏", position: "刘展鸿", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
+            { name: "Jolene", position: "刘若戴", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
+            { name: "熙雯", position: "陈熙雯", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
+            { name: "阿玮", position: "刘珈齐", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
+            { name: "阿翔", position: "陈威翔", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
+            { name: "Janice", position: "刘若戴", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
+            { name: "阿喆", position: "陈威喆", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
+            { name: "阿妹", position: "陈熙颖", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
+            { name: "Jaden", position: "刘若戴", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
+            { name: "阿珉", position: "刘珈珉", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
+            { name: "Venus", position: "刘若戴", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
+            { name: "Ethan", position: "刘若戴", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
+            { name: "阿Belle", position: "刘静涵", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
+            { name: "家家", position: "刘维家", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
 
-            // Save and reset buttons
-            getElement('save-data-btn')?.addEventListener('click', () => {
-                saveCars(inventory);
-                showNotification('Data saved successfully', 'success');
-            });
-            
-            getElement('reset-data-btn')?.addEventListener('click', resetToDefaultData);
+        ];
 
-            // Export and import buttons
-            getElement('export-data-btn')?.addEventListener('click', exportCarData);
-            getElement('import-github-btn')?.addEventListener('click', importFromGitHub);
-
-            // Save car button
-            getElement('save-car-btn')?.addEventListener('click', saveCarData);
-
-            // Delete functionality
-            getElement('delete-car-btn')?.addEventListener('click', () => {
-                const deleteModal = new bootstrap.Modal(getElement('delete-modal'));
-                deleteModal.show();
-            });
-            
-            getElement('confirm-delete-btn')?.addEventListener('click', deleteCarData);
-
-            // Close modals
-            const closeBtns = ['close-modal', 'close-delete-modal', 'cancel-btn', 'cancel-delete-btn'];
-            closeBtns.forEach(id => {
-                getElement(id)?.addEventListener('click', () => {
-                    const modal = bootstrap.Modal.getInstance(getElement('delete-modal'));
-                    if (modal) modal.hide();
-                });
-            });
-
-            // Edit car functionality (event delegation)
-            getElement('car-container')?.addEventListener('click', (e) => {
-                if (e.target.classList.contains('edit-car-btn')) {
-                    const carItem = e.target.closest('.stock-card');
-                    if (!carItem) return;
-                    const carId = parseInt(carItem.getAttribute('data-car-id'));
-                    openEditCarModal(carId);
-                }
-            });
-
-            // Search functionality
-            getElement('search-input')?.addEventListener('input', (e) => {
-                const searchTerm = e.target.value.toLowerCase();
-                const filteredCars = inventory.filter(car => 
-                    car.model.toLowerCase().includes(searchTerm) ||
-                    car.year?.toString().includes(searchTerm) ||
-                    car.specs.toLowerCase().includes(searchTerm)
-                );
-                renderCarList(filteredCars);
-            });
-
-            // Calculator functionality
-            const calculatorInputs = [
-                getElement('otr-price'),
-                getElement('down-payment'),
-                getElement('loan-years'),
-                getElement('interest-rate')
-            ];
-            calculatorInputs.forEach(input => {
-                input?.addEventListener('input', updateLoanCalculation);
-            });
-
-            // Calculator toggle
-            getElement('calc-toggle')?.addEventListener('click', () => {
-                const popup = getElement('calculator-popup');
-                const toggleBtn = getElement('calc-toggle');
-                
-                if (popup.style.display === 'block') {
-                    popup.style.display = 'none';
-                    toggleBtn.innerHTML = '&#x270E;';
-                } else {
-                    popup.style.display = 'block';
-                    toggleBtn.innerHTML = '&#x2715;';
-                    updateLoanCalculation();
-                }
-            });
-
-            // Mobile action buttons
-            getElement('mobile-add-btn')?.addEventListener('click', openAddCarModal);
-            getElement('mobile-save-btn')?.addEventListener('click', () => {
-                saveCars(inventory);
-                showNotification('Data saved successfully', 'success');
-            });
-            getElement('mobile-more-btn')?.addEventListener('click', toggleMobileMenu);
-            
-            // Mobile menu buttons
-            getElement('mobile-reset-btn')?.addEventListener('click', resetToDefaultData);
-            getElement('mobile-export-btn')?.addEventListener('click', exportCarData);
-            getElement('mobile-delete-btn')?.addEventListener('click', () => {
-                const deleteModal = new bootstrap.Modal(getElement('delete-modal'));
-                deleteModal.show();
-            });
-
-            // Close calculator when clicking outside
-            document.addEventListener('click', (e) => {
-                const calculator = getElement('calculator-popup');
-                const toggle = getElement('calc-toggle');
-                
-                if (calculator && calculator.style.display === 'block' && 
-                    !calculator.contains(e.target) && 
-                    !toggle.contains(e.target)) {
-                    calculator.style.display = 'none';
-                    toggle.innerHTML = '&#x270E;';
-                }
+        // 补齐到 30 个
+        for(let i = family.length + 1; i <= 30; i++) {
+            family.push({
+                name: "家庭成员 " + i,
+                position: "成员",
+                birth: "待填写",
+                personality: "待填写",
+                motto: "生活愉快！",
+                photo: "" 
             });
         }
 
-        // 显示通知（兼容函数）
-        function showNotification(message, type) {
-            showSaveStatus(message);
-        }
+        const grid = document.getElementById('memberGrid');
+        const colors = ['#FF6B6B', '#4ECDC4', '#FFD93D', '#6BCB77', '#A29BFE', '#FF85A2'];
+        const defaultImg = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"; // 默认头像
 
-        // 更新统计数据
-        function updateStats() {
-            const inventoryData = JSON.parse(localStorage.getItem(INVENTORY_KEY) || '[]');
-            const feedbackData = JSON.parse(localStorage.getItem(MESSAGE_KEY) || '[]');
+        family.forEach((person, index) => {
+            const color = colors[index % colors.length];
+            const div = document.createElement('div');
+            div.className = 'card';
+            div.style.borderColor = color;
             
-            document.getElementById('total-cars').textContent = inventoryData.length;
-            document.getElementById('total-feedback').textContent = feedbackData.length;
-        }
+            // 处理照片：如果有就用，没有就用默认
+            const imgSrc = person.photo ? person.photo : defaultImg;
 
-        // ----------------------------------------------------
-        // 13. Initialization on Page Load
-        // ----------------------------------------------------
-        document.addEventListener('DOMContentLoaded', () => {
-            // Initialize data
-            inventory = getCars();
-
-            // Render cars
-            renderCarList(inventory);
-
-            // Setup event listeners
-            initializeEventListeners();
-
-            // Initialize calculator and time display
-            updateLoanCalculation();
-            displayLastUpdatedTime();
-            updateStats();
+            div.innerHTML = `
+                <img src="${imgSrc}" class="card-img" onerror="this.src='${defaultImg}'">
+                <div class="card-name">${person.name}</div>
+                <div style="font-size:0.8rem; color:#888; margin-top:5px;">${person.position}</div>
+            `;
+            div.onclick = () => openModal(person, color, imgSrc);
+            grid.appendChild(div);
         });
+
+        function openModal(p, color, imgSrc) {
+            const modal = document.getElementById('myModal');
+            const body = document.getElementById('modalBody');
+            modal.children[0].style.borderColor = color;
+            body.innerHTML = `
+                <img src="${imgSrc}" class="modal-img" onerror="this.src='${defaultImg}'">
+                <h2 style="margin:0; color:${color}">${p.name}</h2>
+                <div class="info-box">
+                    <div class="info-item"><label>🏡 名字</label><p>${p.position}</p></div>
+                    <div class="info-item"><label>📅 出生日期</label><p>${p.birth}</p></div>
+                    <div class="info-item"><label>🧠 性格</label><p>${p.personality}</p></div>
+                    <div class="info-item"><label>💬 口头禅</label><p>"${p.motto}"</p></div>
+                </div>
+            `;
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() { document.getElementById('myModal').style.display = 'none'; }
+        window.onclick = (e) => { if(e.target.id == 'myModal') closeModal(); }
     </script>
 </body>
 </html>
