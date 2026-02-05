@@ -3,102 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bedong Family Group</title>
+    <title>Bedong Family Group | 大家庭</title>
     <style>
         :root {
             --bg: #FFF9EC;
             --font-main: 'Comic Sans MS', 'Microsoft YaHei', sans-serif;
             --accent: #FF6B6B;
+            --card-shadow: 0 10px 20px rgba(0,0,0,0.05);
         }
 
-        body { margin: 0; background: var(--bg); font-family: var(--font-main); scroll-behavior: smooth; overflow-x: hidden; }
+        body { margin: 0; background: var(--bg); font-family: var(--font-main); scroll-behavior: smooth; overflow-x: hidden; color: #444; }
 
-        /* --- INDEX 部分 --- */
+        /* --- INDEX 动态背景 --- */
         .index-page {
             height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, #FF9A9E 0%, #FECFEF 100%);
+            background: linear-gradient(-45deg, #FF9A9E, #FAD0C4, #A18CD1, #FBC2EB);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
             color: white;
             text-align: center;
             padding: 20px;
         }
-        .index-page h1 { font-size: 2.5rem; margin: 0; text-shadow: 3px 3px 0px rgba(0,0,0,0.1); }
-        .start-btn {
-            margin-top: 30px; background: var(--accent); color: white;
-            padding: 15px 40px; border-radius: 50px; text-decoration: none;
-            font-weight: bold; box-shadow: 0 5px 0 #d64545; transition: 0.2s;
-        }
-        .start-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #d64545; }
 
-        /* --- FAMILY 列表 --- */
-        .family-section { padding: 40px 15px; }
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .index-page h1 { font-size: 2.8rem; margin: 0; text-shadow: 3px 3px 0px rgba(0,0,0,0.1); }
+        .index-page p { margin-top: 15px; font-size: 1.1rem; opacity: 0.9; }
+
+        .start-btn {
+            margin-top: 40px; background: white; color: var(--accent);
+            padding: 18px 50px; border-radius: 50px; text-decoration: none;
+            font-weight: bold; box-shadow: 0 10px 0 #eee; transition: 0.3s;
+            font-size: 1.2rem;
+        }
+        .start-btn:hover { transform: scale(1.05); box-shadow: 0 5px 0 #eee; }
+
+        /* --- FAMILY 布局 --- */
+        .family-section { padding: 60px 15px; max-width: 1100px; margin: 0 auto; }
+        .section-header { 
+            text-align: center; 
+            margin: 40px 0 30px; 
+            padding: 10px;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 20px;
+            color: var(--accent);
+        }
+        .section-header h2 { margin: 5px 0; font-size: 1.8rem; }
+        .section-header span { font-size: 0.9rem; opacity: 0.7; }
+
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 20px;
-            max-width: 1000px;
-            margin: 0 auto;
+            gap: 25px;
         }
 
         /* 卡片样式 */
         .card {
-            background: white;
-            border-radius: 25px;
-            padding: 15px;
-            text-align: center;
-            border: 4px solid #FFD93D;
-            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: white; border-radius: 30px; padding: 20px;
+            text-align: center; border: 4px solid #FFD93D;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             cursor: pointer;
         }
-        .card:hover { transform: translateY(-10px) rotate(2deg); }
+        .card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
         
-        /* 卡片照片 */
-        .card-img {
-            width: 100px; height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid #eee;
-            margin-bottom: 10px;
-            background: #fdfdfd;
-        }
-        .card-name { font-weight: bold; font-size: 1.2rem; color: #444; }
+        .card-img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 12px; border: 3px solid #f9f9f9; }
+        .card-name { font-weight: bold; font-size: 1.2rem; color: #333; }
+        .card-role { font-size: 0.8rem; color: #999; margin-top: 4px; }
 
         /* --- 弹窗 --- */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(10px);
             z-index: 100; justify-content: center; align-items: center;
         }
         .modal-content {
-            background: white; width: 85%; max-width: 350px;
-            border-radius: 35px; padding: 25px; border: 6px solid #6BCB77;
-            position: relative; text-align: center;
+            background: white; width: 88%; max-width: 380px;
+            border-radius: 40px; padding: 30px; border: 8px solid #6BCB77;
+            position: relative; text-align: center; animation: pop 0.3s ease;
         }
-        .modal-img {
-            width: 150px; height: 150px; border-radius: 30px;
-            object-fit: cover; margin-bottom: 15px; border: 4px solid #f0f0f0;
-        }
-        .close { position: absolute; right: 20px; top: 15px; font-size: 30px; cursor: pointer; color: #ccc; }
+        @keyframes pop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        .modal-img { width: 140px; height: 140px; border-radius: 35px; object-fit: cover; margin-bottom: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .close { position: absolute; right: 25px; top: 20px; font-size: 35px; cursor: pointer; color: #ddd; }
         
-        .info-box { text-align: left; margin-top: 15px; }
-        .info-item { margin: 12px 0; border-bottom: 1px dashed #eee; padding-bottom: 5px; }
-        .info-item label { color: var(--accent); font-weight: bold; font-size: 0.8rem; display: block; }
-        .info-item p { margin: 3px 0 0; color: #555; font-size: 1.05rem; }
+        .info-box { text-align: left; margin-top: 20px; }
+        .info-item { margin: 15px 0; border-bottom: 2px dashed #f5f5f5; padding-bottom: 8px; }
+        .info-item label { color: var(--accent); font-weight: bold; font-size: 0.75rem; text-transform: uppercase; }
+        .info-item .cn { font-size: 1.1rem; color: #333; display: block; margin-top: 2px; }
+        .info-item .en { font-size: 0.85rem; color: #888; display: block; }
+
+        /* --- FOOTER --- */
+        footer {
+            text-align: center; padding: 50px 20px; margin-top: 50px;
+            background: white; border-top-left-radius: 50px; border-top-right-radius: 50px;
+        }
+        .footer-credit { font-size: 1.1rem; color: #999; }
+        .footer-credit b { color: var(--accent); }
     </style>
 </head>
 <body>
 
     <div class="index-page">
-        <h1>🏡 This is our Bedong Family Group</h1>
-        <p>30 位家庭成员的独家记录</p>
-        <a href="#family" class="start-btn">点击开启 🚀</a>
+        <h1>🏡 Bedong Family Group</h1>
+        <p>我们的故事 · 30位成员的欢笑记忆<br><small>Our Story · Memories of 30 Family Members</small></p>
+        <a href="#family" class="start-btn">点击开启 / Let's Start 🚀</a>
     </div>
 
     <div class="family-section" id="family">
-        <div class="grid" id="memberGrid"></div>
+        <div class="section-header">
+            <h2>🧓 长辈们 / Elders</h2>
+            <span>家有一老，如有一宝</span>
+        </div>
+        <div class="grid" id="elderGrid"></div>
+
+        <div class="section-header" style="margin-top: 80px;">
+            <h2>🧒 孙辈们 / Grandkids</h2>
+            <span>活泼可爱的一代</span>
+        </div>
+        <div class="grid" id="grandkidGrid"></div>
     </div>
 
     <div class="modal" id="myModal">
@@ -108,76 +138,73 @@
         </div>
     </div>
 
+    <footer>
+        <p class="footer-credit">Handcrafted with ❤️ by <b>Zay</b></p>
+        <p style="font-size: 0.7rem; color: #ddd; margin-top: 10px;">© 2026 Bedong Family Collection</p>
+    </footer>
+
     <script>
-        // Zay，在这里修改资料和照片路径
-        // 如果没有照片，photo 留空或写一个不存在的名字，它会自动显示默认头像
         const family = [
-            { name: "阿公", position: "刘亚龙", birth: "5/2/1942", personality: "喜欢吃capati", motto: "5点了吗", photo: "agong.jpg" },
-            { name: "阿嬷", position: "林清萍", birth: "10/9/1946", personality: "有着惊人的默契", motto: "吃饭了吗？", photo: "ama.jpg" },
-            { name: "二姨", position: "刘若戴", birth: "13/7/1971", personality: "人小声大", motto: "刘展鸿！", photo: "zay.jpg" },
-            { name: "大舅", position: "刘承佑", birth: "2/11/1972", personality: "酒量惊人", motto: "我哪里知道啊?", photo: "zay.jpg" },
-            { name: "三姨", position: "刘若坤", birth: "11/10/1977", personality: "老板娘", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
-            { name: "四姨", position: "刘若素", birth: "11/10/1971", personality: "英文老师", motto: "Venus！Ethan！", photo: "zay.jpg" },
-            { name: "五姨", position: "刘彩辉", birth: "27/3/1978", personality: "会驾大车的女生", motto: "Oi Mapu** lu", photo: "zay.jpg" },
-            { name: "小姨", position: "刘彩芝", birth: "11/10/1971", personality: "会驾menual的女生", motto: "阿妹啊！", photo: "zay.jpg" },
-            { name: "舅舅", position: "刘承xia", birth: "31/10/1981", personality: "驾Mercedes的男人", motto: "阿珉咧？", photo: "zay.jpg" },
-            { name: "二姨丈", position: "Eddie Low", birth: "21/2/1971", personality: "厉害吃", motto: "吃啦？要吃吗？", photo: "zay.jpg" },
-            { name: "阿Kim", position: "谢如意", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
-            { name: "三姨丈", position: "刘若戴", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
-            { name: "四姨丈", position: "刘若戴", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
-            { name: "五姨丈", position: "陈huanren", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
-            { name: "小姨丈", position: "猫", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
-
-            { name: "阿齐", position: "刘珈齐", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
-            { name: "阿宏", position: "刘展鸿", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
-            { name: "Jolene", position: "刘若戴", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
-            { name: "熙雯", position: "陈熙雯", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
-            { name: "阿玮", position: "刘珈齐", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
-            { name: "阿翔", position: "陈威翔", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
-            { name: "Janice", position: "刘若戴", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
-            { name: "阿喆", position: "陈威喆", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
-            { name: "阿妹", position: "陈熙颖", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
-            { name: "Jaden", position: "刘若戴", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
-            { name: "阿珉", position: "刘珈珉", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
-            { name: "Venus", position: "刘若戴", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
-            { name: "Ethan", position: "刘若戴", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
-            { name: "阿Belle", position: "刘静涵", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
-            { name: "家家", position: "刘维家", birth: "11/10/1971", personality: "自带喇叭", motto: "阿齐！阿玮！阿珉！", photo: "zay.jpg" },
-
+            // 长辈 Elders
+            { type: 'elder', name: "阿公", role: "Grandpa", pos: "刘亚龙", posEn: "Liew Ah Loong", birth: "5/2/1942", personality: "喜欢吃 Capati", personalityEn: "Loves eating Capati", motto: "5点了吗", mottoEn: "Is it 5 o'clock yet?", photo: "https://postimg.cc/pp8bmkFG.jpg" },
+            { type: 'elder', name: "阿嬷", role: "Grandma", pos: "林清萍", posEn: "Lim Cheng Peng", birth: "10/9/1946", personality: "有着惊人的默契", personalityEn: "Has amazing chemistry", motto: "吃饭了吗？", mottoEn: "Have you eaten yet?", photo: "https://postimg.cc/pp8bmkFG.jpg" },
+            { type: 'elder', name: "二姨", role: "2nd Aunt", pos: "刘若戴", posEn: "Liew Ruo Dai", birth: "13/7/1971", personality: "人小声大", personalityEn: "Small body, loud voice", motto: "刘展鸿！", mottoEn: "Liew Zhan Hong!", photo: "https://postimg.cc/pp8bmkFG.jpg" },
+            { type: 'elder', name: "大舅", role: "1st Uncle", pos: "刘承佑", posEn: "Liew Cheng Yew", birth: "2/11/1972", personality: "酒量惊人", personalityEn: "Amazing alcohol tolerance", motto: "我哪里知道啊?", mottoEn: "How would I know?", photo: "https://postimg.cc/pp8bmkFG.jpg" },
+            { type: 'elder', name: "三姨", role: "3rd Aunt", pos: "刘若坤", posEn: "Liew Ruo Kun", birth: "11/10/1977", personality: "老板娘", personalityEn: "The Boss Lady", motto: "阿齐！阿玮！阿珉！", mottoEn: "Qi! Wei! Min!", photo: "https://postimg.cc/pp8bmkFG.jpg" },
+            { type: 'elder', name: "四姨", role: "4th Aunt", pos: "刘若素", posEn: "Liew Ruo Su", birth: "11/10/1971", personality: "英文老师", personalityEn: "English Teacher", motto: "Venus！Ethan！", mottoEn: "Venus! Ethan!", photo: "https://postimg.cc/pp8bmkFG.jpg" },
+            { type: 'elder', name: "五姨", role: "5th Aunt", pos: "刘彩辉", posEn: "Liew Chai Hui", birth: "27/3/1978", personality: "会驾大车的女生", personalityEn: "Lady who drives big cars", motto: "Oi Mapu** lu", mottoEn: "Oi Mapu** lu", photo: "https://postimg.cc/pp8bmkFG.jpg" },
+            { type: 'elder', name: "小姨", role: "Youngest Aunt", pos: "刘彩芝", posEn: "Liew Chai Chee", birth: "11/10/1971", personality: "会驾 manual 的女生", personalityEn: "Lady who drives manual", motto: "阿妹啊！", mottoEn: "Ah Mei ah!", photo: "https://postimg.cc/pp8bmkFG.jpg" },
+            { type: 'elder', name: "舅舅", role: "Uncle", pos: "刘承xia", posEn: "Liew Cheng Xia", birth: "31/10/1981", personality: "驾 Mercedes 的男人", personalityEn: "The man who drives Mercedes", motto: "阿珉咧？", mottoEn: "Where is Min?", photo: "https://postimg.cc/pp8bmkFG.jpg" },
+            { type: 'elder', name: "二姨丈", role: "2nd Uncle-in-law", pos: "Eddie Low", posEn: "Eddie Low", birth: "21/2/1971", personality: "厉害吃", personalityEn: "Pro eater", motto: "吃啦？要吃吗？", mottoEn: "Eat? Want to eat?", photo: "https://postimg.cc/pp8bmkFG.jpg" },
+            { type: 'elder', name: "阿Kim", role: "Auntie Kim", pos: "谢如意", posEn: "Chia Yee Yee", birth: "11/10/1971", personality: "自带喇叭", personalityEn: "Born with a megaphone", motto: "阿齐！阿玮！阿珉！", mottoEn: "Qi! Wei! Min!", photo: "https://postimg.cc/pp8bmkFG.jpg" },
+            { type: 'elder', name: "三姨丈", role: "3rd Uncle-in-law", pos: "刘若戴", posEn: "Uncle 3", birth: "11/10/1971", personality: "自带喇叭", personalityEn: "Human Speaker", motto: "阿齐！阿玮！阿珉！", mottoEn: "Qi! Wei! Min!", photo: "https://postimg.cc/pp8bmkFG.jpg" },
+            { type: 'elder', name: "四姨丈", role: "4th Uncle-in-law", pos: "刘若戴", posEn: "Uncle 4", birth: "11/10/1971", personality: "自带喇叭", personalityEn: "Loud & Proud", motto: "阿齐！阿玮！阿珉！", mottoEn: "Qi! Wei! Min!", photo: "https://postimg.cc/pp8bmkFG.jpg" },
+            { type: 'elder', name: "五姨丈", role: "5th Uncle-in-law", pos: "陈huanren", posEn: "Tan Huan Ren", birth: "11/10/1971", personality: "自带喇叭", personalityEn: "The Voice", motto: "阿齐！阿玮！阿珉！", mottoEn: "Qi! Wei! Min!", photo: "https://postimg.cc/pp8bmkFG.jpg" },
+            { type: 'elder', name: "小姨丈", role: "Youngest Uncle-in-law", pos: "猫", posEn: "Cat", birth: "11/10/1971", personality: "自带喇叭", personalityEn: "Megaphone Voice", motto: "阿齐！阿玮！阿珉！", mottoEn: "Qi! Wei! Min!", photo: "https://postimg.cc/pp8bmkFG.jpg" },
+            
+            // 孙辈 Grandkids
+            { type: 'kid', name: "阿齐", role: "Qi", pos: "刘珈齐", posEn: "Liew Jia Qi", birth: "11/10/1971", personality: "自带喇叭", personalityEn: "Non-stop talking", motto: "阿齐！阿玮！阿珉！", mottoEn: "Qi! Wei! Min!", photo: "https://postimg.cc/pp8bmkFG.jpg" },
+            { type: 'kid', name: "阿宏", role: "Hong", pos: "刘展鸿", posEn: "Liew Zhan Hong", birth: "11/10/1971", personality: "自带喇叭", personalityEn: "Very loud", motto: "阿齐！阿玮！阿珉！", mottoEn: "Qi! Wei! Min!", photo: "https://postimg.cc/pp8bmkFG.jpg" },
+            { type: 'kid', name: "Jolene", role: "Jolene", pos: "刘若戴", posEn: "Jolene Liew", birth: "11/10/1971", personality: "自带喇叭", personalityEn: "Vocal power", motto: "阿齐！阿玮！阿珉！", mottoEn: "Qi! Wei! Min!", photo: "https://postimg.cc/pp8bmkFG.jpg" },
+            { type: 'kid', name: "熙雯", role: "Xi Wen", pos: "陈熙雯", posEn: "Tan Xi Wen", birth: "11/10/1971", personality: "自带喇叭", personalityEn: "High volume", motto: "阿齐！阿玮！阿珉！", mottoEn: "Qi! Wei! Min!", photo: "https://postimg.cc/pp8bmkFG.jpg" },
+            { type: 'kid', name: "阿玮", role: "Wei", pos: "刘珈齐", posEn: "Liew Jia Wei", birth: "11/10/1971", personality: "自带喇叭", personalityEn: "Speaker soul", motto: "阿齐！阿玮！阿珉！", mottoEn: "Qi! Wei! Min!", photo: "https://postimg.cc/pp8bmkFG.jpg" },
+            { type: 'kid', name: "阿翔", role: "Xiang", pos: "陈威翔", posEn: "Tan Wei Xiang", birth: "11/10/1971", personality: "自带喇叭", personalityEn: "Audio King", motto: "阿齐！阿玮！阿珉！", mottoEn: "Qi! Wei! Min!", photo: "https://i.postimg.cc/252T4h7G/Image-20250428115641.jpg" },
+            { type: 'kid', name: "Janice", role: "Janice", pos: "刘若戴", posEn: "Janice Liew", birth: "11/10/1971", personality: "自带喇叭", personalityEn: "Energy voice", motto: "阿齐！阿玮！阿珉！", mottoEn: "Qi! Wei! Min!", photo: "https://postimg.cc/pp8bmkFG.jpg" },
+            { type: 'kid', name: "阿喆", role: "Zhe", pos: "陈威喆", posEn: "Tan Wei Zhe", birth: "11/10/1971", personality: "自带喇叭", personalityEn: "Loud kid", motto: "阿齐！阿玮！阿珉！", mottoEn: "Qi! Wei! Min!", photo: "https://postimg.cc/pp8bmkFG.jpg" },
+            { type: 'kid', name: "阿妹", role: "Ah Mei", pos: "陈熙颖", posEn: "Tan Xi Ying", birth: "11/10/1971", personality: "自带喇叭", personalityEn: "Noisy & Fun", motto: "阿齐！阿玮！阿珉！", mottoEn: "Qi! Wei! Min!", photo: "https://i.postimg.cc/pX8170Hg/amei.png" },
+            { type: 'kid', name: "Jaden", role: "Jaden", pos: "刘若戴", posEn: "Jaden Liew", birth: "11/10/1971", personality: "自带喇叭", personalityEn: "Speaker mode", motto: "阿齐！阿玮！阿珉！", mottoEn: "Qi! Wei! Min!", photo: "https://postimg.cc/pp8bmkFG.jpg" },
+            { type: 'kid', name: "阿珉", role: "Min", pos: "刘珈珉", posEn: "Liew Jia Min", birth: "11/10/1971", personality: "自带喇叭", personalityEn: "Volume max", motto: "阿齐！阿玮！阿珉！", mottoEn: "Qi! Wei! Min!", photo: "amhttps://postimg.cc/pp8bmkFGin.jpg" },
+            { type: 'kid', name: "Venus", role: "Venus", pos: "刘若戴", posEn: "Venus Liew", birth: "11/10/1971", personality: "自带喇叭", personalityEn: "Natural Speaker", motto: "阿齐！阿玮！阿珉！", mottoEn: "Qi! Wei! Min!", photo: "https://postimg.cc/pp8bmkFG.jpg" },
+            { type: 'kid', name: "Ethan", role: "Ethan", pos: "刘若戴", posEn: "Ethan Liew", birth: "11/10/1971", personality: "自带喇叭", personalityEn: "Voice power", motto: "阿齐！阿玮！阿珉！", mottoEn: "Qi! Wei! Min!", photo: "https://postimg.cc/pp8bmkFG.jpg" },
+            { type: 'kid', name: "阿Belle", role: "Belle", pos: "刘静涵", posEn: "Liew Jing Han", birth: "11/10/1971", personality: "自带喇叭", personalityEn: "Always loud", motto: "阿齐！阿玮！阿珉！", mottoEn: "Qi! Wei! Min!", photo: "https://postimg.cc/pp8bmkFG.jpg" },
+            { type: 'kid', name: "家家", role: "Jia Jia", pos: "刘维家", posEn: "Liew Wei Jia", birth: "11/10/1971", personality: "自带喇叭", personalityEn: "Mini Speaker", motto: "阿齐！阿玮！阿珉！", mottoEn: "Qi! Wei! Min!", photo: "https://postimg.cc/pp8bmkFG.jpg" }
         ];
 
-        // 补齐到 30 个
-        for(let i = family.length + 1; i <= 30; i++) {
-            family.push({
-                name: "家庭成员 " + i,
-                position: "成员",
-                birth: "待填写",
-                personality: "待填写",
-                motto: "生活愉快！",
-                photo: "" 
-            });
-        }
-
-        const grid = document.getElementById('memberGrid');
+        const elderGrid = document.getElementById('elderGrid');
+        const kidGrid = document.getElementById('grandkidGrid');
         const colors = ['#FF6B6B', '#4ECDC4', '#FFD93D', '#6BCB77', '#A29BFE', '#FF85A2'];
-        const defaultImg = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"; // 默认头像
+        const defaultImg = "https://cdn-icons-png.flaticon.com/512/3135/3135823.png";
 
-        family.forEach((person, index) => {
-            const color = colors[index % colors.length];
+        family.forEach((p, i) => {
+            const color = colors[i % colors.length];
             const div = document.createElement('div');
             div.className = 'card';
             div.style.borderColor = color;
+            const imgSrc = p.photo ? p.photo : defaultImg;
             
-            // 处理照片：如果有就用，没有就用默认
-            const imgSrc = person.photo ? person.photo : defaultImg;
-
             div.innerHTML = `
                 <img src="${imgSrc}" class="card-img" onerror="this.src='${defaultImg}'">
-                <div class="card-name">${person.name}</div>
-                <div style="font-size:0.8rem; color:#888; margin-top:5px;">${person.position}</div>
+                <div class="card-name">${p.name}</div>
+                <div class="card-role">${p.role}</div>
             `;
-            div.onclick = () => openModal(person, color, imgSrc);
-            grid.appendChild(div);
+            div.onclick = () => openModal(p, color, imgSrc);
+
+            // 分配到对应的网格
+            if (p.type === 'elder') {
+                elderGrid.appendChild(div);
+            } else {
+                kidGrid.appendChild(div);
+            }
         });
 
         function openModal(p, color, imgSrc) {
@@ -186,12 +213,12 @@
             modal.children[0].style.borderColor = color;
             body.innerHTML = `
                 <img src="${imgSrc}" class="modal-img" onerror="this.src='${defaultImg}'">
-                <h2 style="margin:0; color:${color}">${p.name}</h2>
+                <h2 style="margin:0; color:${color}">${p.name} <small style="font-size:0.5em; color:#999;">${p.role}</small></h2>
                 <div class="info-box">
-                    <div class="info-item"><label>🏡 名字</label><p>${p.position}</p></div>
-                    <div class="info-item"><label>📅 出生日期</label><p>${p.birth}</p></div>
-                    <div class="info-item"><label>🧠 性格</label><p>${p.personality}</p></div>
-                    <div class="info-item"><label>💬 口头禅</label><p>"${p.motto}"</p></div>
+                    <div class="info-item"><label>🏡 姓名 / Full Name</label><span class="cn">${p.pos}</span><span class="en">${p.posEn}</span></div>
+                    <div class="info-item"><label>📅 出生日期 / Birthday</label><span class="cn">${p.birth}</span></div>
+                    <div class="info-item"><label>🧠 性格 / Personality</label><span class="cn">${p.personality}</span><span class="en">${p.personalityEn}</span></div>
+                    <div class="info-item"><label>💬 口头禅 / Motto</label><span class="cn">"${p.motto}"</span><span class="en">"${p.mottoEn}"</span></div>
                 </div>
             `;
             modal.style.display = 'flex';
