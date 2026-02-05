@@ -1,2 +1,2 @@
 # bedong-family-system
-ManThong Inventory System
+This Website is let u know our family
